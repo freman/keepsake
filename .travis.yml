@@ -4,7 +4,7 @@ go:
 script:
 - go vet
 - go get
-- mkdir -p releases
+- mkdir -p release
 - CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -ldflags "-X main.version=$TRAVIS_TAG
   -X main.commit=$TRAVIS_COMMIT" -o release/keepsake-linux-386 github.com/freman/keepsake
 - CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -ldflags "-X main.version=$TRAVIS_TAG
