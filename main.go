@@ -24,6 +24,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -125,7 +126,9 @@ func main() {
 
 	secret, err := vault.Logical().Unwrap(token)
 	if err != nil {
-		log.WithError(err).Fatal("Unwrapping secret failed")
+		if !strings.HasSuffix(err.Error(), "* wrapping token is not valid or does not exist") {
+			log.WithError(err).Fatal("Unwrapping secret failed")
+		}
 	}
 
 	if secret != nil {
