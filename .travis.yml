@@ -21,3 +21,4 @@ deploy:
     - release/keepsake-linux-amd64
   on:
     repo: freman/keepsake
+    tags: true
