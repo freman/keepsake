@@ -34,6 +34,11 @@ const (
 	EnvVaultToken = "VAULT_TOKEN"
 )
 
+var (
+	version = "Undefined"
+	commit  = "Undefined"
+)
+
 var environmentVariables = []string{
 	EnvVaultToken,
 	vaultAPI.EnvVaultAddress,
@@ -62,6 +67,7 @@ func main() {
 	keyFile := flag.String("keyFile", "", "Output key file")
 	caFile := flag.String("caFile", "", "Output ca file")
 	command := flag.String("cmd", "", "Command to execute")
+	showVersion := flag.Bool("version", false, "Show version and exit")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n\n", os.Args[0])
@@ -80,6 +86,12 @@ func main() {
 	}
 
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("keepsake - %s (%s)\n", version, commit)
+		fmt.Println("https://github.com/freman/keepsake")
+		return
+	}
 
 	if *certCN == "" || *certFile == "" || *keyFile == "" || *caFile == "" {
 		flag.Usage()

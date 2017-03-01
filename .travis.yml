@@ -1,0 +1,23 @@
+language: go
+go:
+- 1.8
+script:
+- go vet
+- go get
+- mkdir -p releases
+- CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -ldflags "-X main.version=$TRAVIS_TAG
+  -X main.commit=$TRAVIS_COMMIT" -o release/keepsake-linux-386 github.com/freman/keepsake
+- CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -ldflags "-X main.version=$TRAVIS_TAG
+  -X main.commit=$TRAVIS_COMMIT" -o release/keepsake-linux-arm github.com/freman/keepsake
+- CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-X main.version=$TRAVIS_TAG
+  -X main.commit=$TRAVIS_COMMIT" -o release/keepsake-linux-amd64 github.com/freman/keepsake
+deploy:
+  provider: releases
+  api_key:
+    secure: PFWm0kpuFejZ5rKLYxDGMwOjCLs9C4l18HJlJGCmY3zxaMKKRcd3w4/MMgXRDBlGnHpAl10dCX4SMM+HiuSUlB1YdKIQm4Ze7O81DE3kSPOi+EHjjLqG4+JALh4DY+5WsEWLEhh7kTKgQWmRZK6wJxi5OgSo40zrkWkYlGKFpHcywexq8Dkh9Tr5Phtw04MPeimgm9lV2abM8ZJ+/eZ7UznraYmNLgLgQpDNp8OSIAxzandHqkbSM4AY6Y4wZvOoO6b/ODQfDAUHQc+3OoATXBLPkz4XJ4rsFFJsX6ADuZ+0dpDzR4wnxdfbvRNxY5UgDQzCrT1iULC6/XofBb+PN0x8oHtSEM8wE3QKIKiLblUMPufQaHDp4D4DPbUGMrnbkV3hII+rfhAv103Px85u4YExL8tiJifcIbs7PyV0L4MXNp7EXnyIa61DQTat0IXbLjEBqG13NBybCzQ1aqMcgYbfHKDtrFFuUyDE+O7fESOgP+eXi7GLsPSE1rwaSi1+p4a5+hC3yMa8PeWWX+6URMSWo3JcjotOzVhNxKz+R+LK9dNKzMyTjauu1t4irjwaSMsGpjWkb6bykpitAfgDcwVaWXzxeBoZnN3/MJy7a0MnvqBcom0eqAqhEOVzYbEn6ZPUXEsrSe9oatlXYnWYzA9nj+F2EMq5J6dIX02KPHs=
+  file:
+    - release/keepsake-linux-386
+    - release/keepsake-linux-arm
+    - release/keepsake-linux-amd64
+  on:
+    repo: freman/keepsake
