@@ -134,7 +134,7 @@ func main() {
 	if secret != nil {
 		vault.SetToken(secret.Auth.ClientToken)
 	} else {
-		secret, err = vault.Auth().Token().LookupSelf()
+		secret, err = vault.Auth().Token().RenewSelf(0)
 		if err != nil {
 			log.WithError(err).Fatal("Unable to look up token details")
 		}
