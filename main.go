@@ -67,6 +67,7 @@ func main() {
 	certFile := flag.String("certFile", "", "Output certificate file")
 	keyFile := flag.String("keyFile", "", "Output key file")
 	caFile := flag.String("caFile", "", "Output ca file")
+	bundleFile := flag.String("bundleFile", "", "Ouput a ca+cert bundle")
 	command := flag.String("cmd", "", "Command to execute")
 	showVersion := flag.Bool("version", false, "Show version and exit")
 
@@ -159,14 +160,19 @@ func main() {
 		if err != nil {
 			log.WithError(err).Fatal("Unable to get keys")
 		}
-		if err := ioutil.WriteFile(*certFile, []byte(pkiSecret.Data["certificate"].(string)), 0640); err != nil {
+		if err := ioutil.WriteFile(*certFile, []byte(pkiSecret.Data["certificate"].(string)+"\n"), 0640); err != nil {
 			log.WithError(err).WithField("file", *certFile).Fatal("Failed to write certificate")
 		}
-		if err := ioutil.WriteFile(*caFile, []byte(pkiSecret.Data["issuing_ca"].(string)), 0640); err != nil {
+		if err := ioutil.WriteFile(*caFile, []byte(pkiSecret.Data["issuing_ca"].(string)+"\n"), 0640); err != nil {
 			log.WithError(err).WithField("file", *caFile).Fatal("Failed to write ca")
 		}
-		if err := ioutil.WriteFile(*keyFile, []byte(pkiSecret.Data["private_key"].(string)), 0640); err != nil {
+		if err := ioutil.WriteFile(*keyFile, []byte(pkiSecret.Data["private_key"].(string)+"\n"), 0640); err != nil {
 			log.WithError(err).WithField("file", *keyFile).Fatal("Failed to write key")
+		}
+		if *bundleFile != "" {
+			if err := ioutil.WriteFile(*bundleFile, []byte(pkiSecret.Data["certificate"].(string)+"\n"+pkiSecret.Data["issuing_ca"].(string)+"\n"), 0640); err != nil {
+				log.WithError(err).WithField("file", *certFile).Fatal("Failed to write certificate")
+			}
 		}
 
 		certRenewalInterval = renewDuration(pkiSecret.LeaseDuration)
